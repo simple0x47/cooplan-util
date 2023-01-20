@@ -5,8 +5,8 @@ where
     fn handle_error(self, error: ErrType) -> Result<OkType, ErrType>;
 }
 
-impl<OkType, ErrType> ErrorHandler<OkType, ErrType>
-    for tokio::sync::oneshot::Sender<Result<OkType, ErrType>>
+impl<ReplierOkType, OkType, ErrType> ErrorHandler<OkType, ErrType>
+    for tokio::sync::oneshot::Sender<Result<ReplierOkType, ErrType>>
 where
     ErrType: Clone,
 {
@@ -26,7 +26,7 @@ fn returns_error() {
     const ERROR: &str = "this is the error";
 
     let (sender, receiver) = tokio::sync::oneshot::channel::<Result<&str, &str>>();
-    let result_error = sender.handle_error(ERROR);
+    let result_error: Result<(), &str> = sender.handle_error(ERROR);
 
     assert_eq!(ERROR, result_error.unwrap_err());
 }
