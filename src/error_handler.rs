@@ -19,3 +19,14 @@ where
         Err(error)
     }
 }
+
+#[cfg(test)]
+#[test]
+fn returns_error() {
+    const ERROR: &str = "this is the error";
+
+    let (sender, receiver) = tokio::sync::oneshot::channel::<Result<&str, &str>>();
+    let result_error = sender.handle_error(ERROR);
+
+    assert_eq!(ERROR, result_error.unwrap_err());
+}
